@@ -3,86 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JLPT N5 Kanji Flashcards</title>
+    <title>JLPT N5 Vocabulary Practice</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Custom styles for the flashcard flip animation */
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
         }
-        .kanji-char {
-             font-family: 'Noto Sans JP', sans-serif;
+        .highlight {
+            font-weight: bold;
+            color: #3B82F6; /* blue-500 */
         }
-        .perspective {
-            perspective: 1000px;
+        .correct {
+            background-color: #22C55E !important; /* green-500 */
+            color: white !important;
+            border-color: #22C55E !important;
         }
-        .card {
-            transform-style: preserve-3d;
-            transition: transform 0.6s;
+        .incorrect {
+            background-color: #EF4444 !important; /* red-500 */
+            color: white !important;
+            border-color: #EF4444 !important;
         }
-        .card.flipped {
-            transform: rotateY(180deg);
-        }
-        .card-face {
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden; /* Safari */
-        }
-        .card-back {
-            transform: rotateY(180deg);
+        .correct-border {
+            border-color: #22C55E !important; /* green-500 */
+            border-width: 2px;
         }
     </style>
 </head>
-<body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 flex flex-col items-center justify-center min-h-screen p-4">
+<body class="bg-slate-100 flex items-center justify-center min-h-screen">
 
-    <div class="w-full max-w-md mx-auto">
-        <header class="text-center mb-6">
-            <h1 class="text-3xl font-bold text-sky-600 dark:text-sky-400">JLPT N5 Kanji</h1>
-            <p class="text-slate-500 dark:text-slate-400 mt-1">Click the card to see the details.</p>
-        </header>
-
-        <!-- Progress Bar -->
-        <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5 mb-6">
-            <div id="progress-bar" class="bg-sky-500 h-2.5 rounded-full transition-all duration-300 ease-in-out" style="width: 0%"></div>
+    <div id="app" class="w-full max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-6 md:p-8 text-center">
+        
+        <h1 class="text-2xl md:text-3xl font-bold text-slate-800 mb-6">JLPT N5 Vocabulary Practice</h1>
+        
+        <!-- Japanese Sentence -->
+        <div id="japanese-sentence-container" class="bg-slate-50 rounded-lg p-4 mb-6 min-h-[80px] flex items-center justify-center">
+            <p id="japanese-sentence" class="text-xl md:text-2xl text-slate-700"></p>
         </div>
 
-        <!-- Flashcard -->
-        <div id="flashcard-container" class="perspective w-full h-64 sm:h-80 mb-6">
-            <div id="flashcard" class="card relative w-full h-full cursor-pointer shadow-lg rounded-xl">
-                <!-- Front of the card -->
-                <div id="card-front" class="card-face absolute w-full h-full bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center">
-                    <span id="kanji-char" class="kanji-char text-8xl sm:text-9xl text-slate-900 dark:text-white"></span>
-                </div>
-                <!-- Back of the card -->
-                <div id="card-back" class="card-back card-face absolute w-full h-full bg-white dark:bg-slate-800 rounded-xl flex flex-col justify-center p-6">
-                    <div>
-                        <h3 class="text-xl font-bold text-sky-600 dark:text-sky-400 mb-2">Meaning</h3>
-                        <p id="kanji-meaning" class="text-lg mb-4"></p>
-                    </div>
-                    <div class="border-t border-slate-200 dark:border-slate-700 pt-4">
-                        <h3 class="text-xl font-bold text-sky-600 dark:text-sky-400 mb-2">Readings</h3>
-                        <div class="flex justify-around">
-                            <div>
-                                <h4 class="font-semibold text-slate-500 dark:text-slate-400">On'yomi</h4>
-                                <p id="kanji-onyomi" class="text-lg kanji-char"></p>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-slate-500 dark:text-slate-400">Kun'yomi</h4>
-                                <p id="kanji-kunyomi" class="text-lg kanji-char"></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- English Translation (Initially Hidden) -->
+        <div id="english-sentence-container" class="mb-6 min-h-[24px]">
+            <p id="english-sentence" class="text-md text-slate-500 font-light hidden"></p>
         </div>
 
-        <!-- Navigation -->
-        <div class="flex justify-between items-center">
-            <button id="prev-btn" class="bg-slate-300 hover:bg-slate-400 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 font-bold py-3 px-6 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                Previous
-            </button>
-            <div id="kanji-counter" class="text-lg font-semibold text-slate-600 dark:text-slate-300">1 / 103</div>
-            <button id="next-btn" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200">
+        <!-- Multiple Choice Options -->
+        <div id="options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <button class="option-btn p-4 border-2 border-slate-300 rounded-lg text-lg text-slate-700 hover:bg-slate-100 transition-colors duration-200"></button>
+            <button class="option-btn p-4 border-2 border-slate-300 rounded-lg text-lg text-slate-700 hover:bg-slate-100 transition-colors duration-200"></button>
+            <button class="option-btn p-4 border-2 border-slate-300 rounded-lg text-lg text-slate-700 hover:bg-slate-100 transition-colors duration-200"></button>
+            <button class="option-btn p-4 border-2 border-slate-300 rounded-lg text-lg text-slate-700 hover:bg-slate-100 transition-colors duration-200"></button>
+        </div>
+
+        <!-- Next Button (Initially Hidden) -->
+        <div id="next-button-container" class="min-h-[60px] flex items-center justify-center">
+            <button id="next-btn" class="hidden w-full sm:w-auto bg-blue-500 text-white font-bold py-3 px-8 rounded-lg text-lg hover:bg-blue-600 transition-transform duration-200 transform hover:scale-105">
                 Next
             </button>
         </div>
@@ -90,177 +64,110 @@
     </div>
 
     <script>
-        const n5Kanji = [
-            { kanji: '一', meaning: 'One', onyomi: 'イチ', kunyomi: 'ひと' },
-            { kanji: '二', meaning: 'Two', onyomi: 'ニ', kunyomi: 'ふた' },
-            { kanji: '三', meaning: 'Three', onyomi: 'サン', kunyomi: 'み' },
-            { kanji: '四', meaning: 'Four', onyomi: 'シ', kunyomi: 'よん, よ' },
-            { kanji: '五', meaning: 'Five', onyomi: 'ゴ', kunyomi: 'いつ' },
-            { kanji: '六', meaning: 'Six', onyomi: 'ロク', kunyomi: 'む' },
-            { kanji: '七', meaning: 'Seven', onyomi: 'シチ', kunyomi: 'なな' },
-            { kanji: '八', meaning: 'Eight', onyomi: 'ハチ', kunyomi: 'や' },
-            { kanji: '九', meaning: 'Nine', onyomi: 'キュウ, ク', kunyomi: 'ここの' },
-            { kanji: '十', meaning: 'Ten', onyomi: 'ジュウ', kunyomi: 'とお' },
-            { kanji: '百', meaning: 'Hundred', onyomi: 'ヒャク', kunyomi: '-' },
-            { kanji: '千', meaning: 'Thousand', onyomi: 'セン', kunyomi: 'ち' },
-            { kanji: '万', meaning: 'Ten Thousand', onyomi: 'マン, バン', kunyomi: '-' },
-            { kanji: '円', meaning: 'Yen, Circle', onyomi: 'エン', kunyomi: 'まる' },
-            { kanji: '時', meaning: 'Time, Hour', onyomi: 'ジ', kunyomi: 'とき' },
-            { kanji: '日', meaning: 'Day, Sun', onyomi: 'ニチ, ジツ', kunyomi: 'ひ, -び, -か' },
-            { kanji: '月', meaning: 'Month, Moon', onyomi: 'ゲツ, ガツ', kunyomi: 'つき' },
-            { kanji: '火', meaning: 'Fire', onyomi: 'カ', kunyomi: 'ひ, -び, ほ-' },
-            { kanji: '水', meaning: 'Water', onyomi: 'スイ', kunyomi: 'みず' },
-            { kanji: '木', meaning: 'Tree, Wood', onyomi: 'モク, ボク', kunyomi: 'き, こ-' },
-            { kanji: '金', meaning: 'Gold, Money', onyomi: 'キン, コン', kunyomi: 'かね' },
-            { kanji: '土', meaning: 'Earth, Soil', onyomi: 'ド, ト', kunyomi: 'つち' },
-            { kanji: '曜', meaning: 'Weekday', onyomi: 'ヨウ', kunyomi: '-' },
-            { kanji: '上', meaning: 'Up, Above', onyomi: 'ジョウ, ショウ', kunyomi: 'うえ, -うえ, うわ-' },
-            { kanji: '下', meaning: 'Down, Below', onyomi: 'カ, ゲ', kunyomi: 'した, しも, もと' },
-            { kanji: '中', meaning: 'Middle, Inside', onyomi: 'チュウ', kunyomi: 'なか' },
-            { kanji: '半', meaning: 'Half', onyomi: 'ハン', kunyomi: 'なか-ば' },
-            { kanji: '山', meaning: 'Mountain', onyomi: 'サン, セン', kunyomi: 'やま' },
-            { kanji: '川', meaning: 'River', onyomi: 'セン', kunyomi: 'かわ' },
-            { kanji: '元', meaning: 'Origin, Source', onyomi: 'ゲン, ガン', kunyomi: 'もと' },
-            { kanji: '気', meaning: 'Spirit, Mind', onyomi: 'キ, ケ', kunyomi: 'いき' },
-            { kanji: '天', meaning: 'Heaven, Sky', onyomi: 'テン', kunyomi: 'あめ, あま-' },
-            { kanji: '私', meaning: 'I, Private', onyomi: 'シ', kunyomi: 'わたくし, わたし' },
-            { kanji: '今', meaning: 'Now', onyomi: 'コン, キン', kunyomi: 'いま' },
-            { kanji: '田', meaning: 'Rice Field', onyomi: 'デン', kunyomi: 'た' },
-            { kanji: '女', meaning: 'Woman, Female', onyomi: 'ジョ, ニョ', kunyomi: 'おんな, め' },
-            { kanji: '男', meaning: 'Man, Male', onyomi: 'ダン, ナン', kunyomi: 'おとこ' },
-            { kanji: '見', meaning: 'To See', onyomi: 'ケン', kunyomi: 'み-る, み-える' },
-            { kanji: '行', meaning: 'To Go', onyomi: 'コウ, ギョウ', kunyomi: 'い-く, ゆ-く, おこな-う' },
-            { kanji: '食', meaning: 'To Eat', onyomi: 'ショク, ジキ', kunyomi: 'た-べる, く-う' },
-            { kanji: '飲', meaning: 'To Drink', onyomi: 'イン', kunyomi: 'の-む' },
-            { kanji: '東', meaning: 'East', onyomi: 'トウ', kunyomi: 'ひがし' },
-            { kanji: '西', meaning: 'West', onyomi: 'セイ, サイ', kunyomi: 'にし' },
-            { kanji: '南', meaning: 'South', onyomi: 'ナン', kunyomi: 'みなみ' },
-            { kanji: '北', meaning: 'North', onyomi: 'ホク', kunyomi: 'きた' },
-            { kanji: '分', meaning: 'Minute, To Understand', onyomi: 'フン, ブン', kunyomi: 'わ-かる, わ-ける' },
-            { kanji: '午', meaning: 'Noon', onyomi: 'ゴ', kunyomi: 'うま' },
-            { kanji: '聞', meaning: 'To Hear, To Listen', onyomi: 'ブン, モン', kunyomi: 'き-く, き-こえる' },
-            { kanji: '読', meaning: 'To Read', onyomi: 'ドク, トク', kunyomi: 'よ-む' },
-            { kanji: '書', meaning: 'To Write', onyomi: 'ショ', kunyomi: 'か-く' },
-            { kanji: '話', meaning: 'To Speak', onyomi: 'ワ', kunyomi: 'はな-す, はなし' },
-            { kanji: '買', meaning: 'To Buy', onyomi: 'バイ', kunyomi: 'か-う' },
-            { kanji: '体', meaning: 'Body', onyomi: 'タイ, テイ', kunyomi: 'からだ' },
-            { kanji: '語', meaning: 'Word, Language', onyomi: 'ゴ', kunyomi: 'かた-る' },
-            { kanji: '毎', meaning: 'Every', onyomi: 'マイ', kunyomi: 'ごと' },
-            { kanji: '年', meaning: 'Year', onyomi: 'ネン', kunyomi: 'とし' },
-            { kanji: '来', meaning: 'To Come', onyomi: 'ライ', kunyomi: 'く-る, き-ます' },
-            { kanji: '帰', meaning: 'To Return', onyomi: 'キ', kunyomi: 'かえ-る' },
-            { kanji: '人', meaning: 'Person', onyomi: 'ジン, ニン', kunyomi: 'ひと' },
-            { kanji: '子', meaning: 'Child', onyomi: 'シ, ス', kunyomi: 'こ' },
-            { kanji: '友', meaning: 'Friend', onyomi: 'ユウ', kunyomi: 'とも' },
-            { kanji: '父', meaning: 'Father', onyomi: 'フ', kunyomi: 'ちち' },
-            { kanji: '母', meaning: 'Mother', onyomi: 'ボ', kunyomi: 'はは' },
-            { kanji: '先', meaning: 'Ahead, Previous', onyomi: 'セン', kunyomi: 'さき' },
-            { kanji: '生', meaning: 'Life, To Be Born', onyomi: 'セイ, ショウ', kunyomi: 'い-きる, う-まれる' },
-            { kanji: '学', meaning: 'To Study, Learning', onyomi: 'ガク', kunyomi: 'まな-ぶ' },
-            { kanji: '校', meaning: 'School', onyomi: 'コウ', kunyomi: '-' },
-            { kanji: '大', meaning: 'Big, Large', onyomi: 'ダイ, タイ', kunyomi: 'おお-きい' },
-            { kanji: '小', meaning: 'Small, Little', onyomi: 'ショウ', kunyomi: 'ちい-さい, こ-' },
-            { kanji: '高', meaning: 'High, Expensive', onyomi: 'コウ', kunyomi: 'たか-い' },
-            { kanji: '安', meaning: 'Cheap, Peace', onyomi: 'アン', kunyomi: 'やす-い' },
-            { kanji: '新', meaning: 'New', onyomi: 'シン', kunyomi: 'あたら-しい' },
-            { kanji: '古', meaning: 'Old', onyomi: 'コ', kunyomi: 'ふる-い' },
-            { kanji: '長', meaning: 'Long, Chief', onyomi: 'チョウ', kunyomi: 'なが-い' },
-            { kanji: '多', meaning: 'Many, Much', onyomi: 'タ', kunyomi: 'おお-い' },
-            { kanji: '少', meaning: 'Few, a little', onyomi: 'ショウ', kunyomi: 'すく-ない, すこ-し' },
-            { kanji: '早', meaning: 'Early, Fast', onyomi: 'ソウ', kunyomi: 'はや-い' },
-            { kanji: '何', meaning: 'What', onyomi: 'カ', kunyomi: 'なに, なん' },
-            { kanji: '名', meaning: 'Name', onyomi: 'メイ, ミョウ', kunyomi: 'な' },
-            { kanji: '車', meaning: 'Car', onyomi: 'シャ', kunyomi: 'くるま' },
-            { kanji: '駅', meaning: 'Station', onyomi: 'エキ', kunyomi: '-' },
-            { kanji: '道', meaning: 'Road, Way', onyomi: 'ドウ, トウ', kunyomi: 'みち' },
-            { kanji: '国', meaning: 'Country', onyomi: 'コク', kunyomi: 'くに' },
-            { kanji: '会', meaning: 'To Meet', onyomi: 'カイ', kunyomi: 'あ-う' },
-            { kanji: '社', meaning: 'Company, Shrine', onyomi: 'シャ', kunyomi: 'やしろ' },
-            { kanji: '店', meaning: 'Shop', onyomi: 'テン', kunyomi: 'みせ' },
-            { kanji: '電', meaning: 'Electricity', onyomi: 'デン', kunyomi: '-' },
-            { kanji: '話', meaning: 'Talk, Story', onyomi: 'ワ', kunyomi: 'はな-す, はなし' },
-            { kanji: '言', meaning: 'To Say', onyomi: 'ゲン, ゴン', kunyomi: 'い-う, こと' },
-            { kanji: '立', meaning: 'To Stand', onyomi: 'リツ', kunyomi: 'た-つ' },
-            { kanji: '休', meaning: 'To Rest', onyomi: 'キュウ', kunyomi: 'やす-む' },
-            { kanji: '入', meaning: 'To Enter', onyomi: 'ニュウ', kunyomi: 'はい-る, い-る' },
-            { kanji: '出', meaning: 'To Go Out', onyomi: 'シュツ, スイ', kunyomi: 'で-る, だ-す' },
-            { kanji: '口', meaning: 'Mouth', onyomi: 'コウ, ク', kunyomi: 'くち' },
-            { kanji: '右', meaning: 'Right', onyomi: 'ウ, ユウ', kunyomi: 'みぎ' },
-            { kanji: '左', meaning: 'Left', onyomi: 'サ, シャ', kunyomi: 'ひだり' },
-            { kanji: '外', meaning: 'Outside', onyomi: 'ガイ, ゲ', kunyomi: 'そと, ほか' },
-            { kanji: '前', meaning: 'Before, Front', onyomi: 'ゼン', kunyomi: 'まえ' },
-            { kanji: '後', meaning: 'After, Behind', onyomi: 'ゴ, コウ', kunyomi: 'うし-ろ, あと' },
-            { kanji: '間', meaning: 'Interval, Between', onyomi: 'カン, ケン', kunyomi: 'あいだ, ま' },
-            { kanji: '週', meaning: 'Week', onyomi: 'シュウ', kunyomi: '-' },
-            { kanji: '白', meaning: 'White', onyomi: 'ハク, ビャク', kunyomi: 'しろ, しら' },
-            { kanji: '雨', meaning: 'Rain', onyomi: 'ウ', kunyomi: 'あめ, あま' }
+        const vocabulary = [
+            { word: '私', sentenceJP: '{word}は学生です。', sentenceEN: '<strong>I</strong> am a student.', correctMeaning: 'I; me', options: ['You', 'He', 'She'] },
+            { word: 'です', sentenceJP: 'これは本{word}。', sentenceEN: 'This <strong>is</strong> a book.', correctMeaning: 'is; am; are', options: ['was', 'will be', 'is not'] },
+            { word: '学生', sentenceJP: '田中さんは{word}です。', sentenceEN: 'Mr. Tanaka is a <strong>student</strong>.', correctMeaning: 'student', options: ['teacher', 'doctor', 'engineer'] },
+            { word: '学校', sentenceJP: '{word}へ行きます。', sentenceEN: 'I go to <strong>school</strong>.', correctMeaning: 'school', options: ['hospital', 'park', 'station'] },
+            { word: '先生', sentenceJP: '山田{word}は日本語を教えます。', sentenceEN: 'Teacher Yamada teaches Japanese.', correctMeaning: 'teacher', options: ['student', 'doctor', 'police officer'] },
+            { word: '大きい', sentenceJP: 'この犬は{word}です。', sentenceEN: 'This dog is <strong>big</strong>.', correctMeaning: 'big', options: ['small', 'fast', 'red'] },
+            { word: '小さい', sentenceJP: 'その猫は{word}です。', sentenceEN: 'That cat is <strong>small</strong>.', correctMeaning: 'small', options: ['big', 'black', 'cute'] },
+            { word: '食べます', sentenceJP: '毎日ご飯を{word}。', sentenceEN: 'I <strong>eat</strong> rice every day.', correctMeaning: 'to eat', options: ['to drink', 'to sleep', 'to read'] },
+            { word: '飲みます', sentenceJP: '水を{word}。', sentenceEN: 'I <strong>drink</strong> water.', correctMeaning: 'to drink', options: ['to eat', 'to see', 'to write'] },
+            { word: '見ます', sentenceJP: 'テレビを{word}。', sentenceEN: 'I <strong>watch</strong> TV.', correctMeaning: 'to see; to watch', options: ['to listen', 'to speak', 'to buy'] },
+            { word: '行きます', sentenceJP: '明日、京都へ{word}。', sentenceEN: 'I will <strong>go</strong> to Kyoto tomorrow.', correctMeaning: 'to go', options: ['to come', 'to return', 'to stay'] },
+            { word: '今日', sentenceJP: '{word}は月曜日です。', sentenceEN: '<strong>Today</strong> is Monday.', correctMeaning: 'today', options: ['yesterday', 'tomorrow', 'tonight'] },
+            { word: '明日', sentenceJP: '{word}は晴れです。', sentenceEN: '<strong>Tomorrow</strong> will be sunny.', correctMeaning: 'tomorrow', options: ['today', 'yesterday', 'the day after tomorrow'] },
+            { word: '昨日', sentenceJP: '{word}、映画を見ました。', sentenceEN: '<strong>Yesterday</strong>, I watched a movie.', correctMeaning: 'yesterday', options: ['today', 'tomorrow', 'last week'] },
+            { word: '時間', sentenceJP: '今、何{word}ですか。', sentenceEN: 'What <strong>time</strong> is it now?', correctMeaning: 'time', options: ['day', 'money', 'place'] },
         ];
 
-        let currentIndex = 0;
-
-        const flashcard = document.getElementById('flashcard');
-        const kanjiChar = document.getElementById('kanji-char');
-        const kanjiMeaning = document.getElementById('kanji-meaning');
-        const kanjiOnyomi = document.getElementById('kanji-onyomi');
-        const kanjiKunyomi = document.getElementById('kanji-kunyomi');
-        const prevBtn = document.getElementById('prev-btn');
+        const japaneseSentenceEl = document.getElementById('japanese-sentence');
+        const englishSentenceEl = document.getElementById('english-sentence');
+        const optionsContainer = document.getElementById('options-container');
+        const optionBtns = document.querySelectorAll('.option-btn');
         const nextBtn = document.getElementById('next-btn');
-        const kanjiCounter = document.getElementById('kanji-counter');
-        const progressBar = document.getElementById('progress-bar');
 
-        function updateCard() {
-            const currentKanji = n5Kanji[currentIndex];
-            kanjiChar.textContent = currentKanji.kanji;
-            kanjiMeaning.textContent = currentKanji.meaning;
-            kanjiOnyomi.textContent = currentKanji.onyomi;
-            kanjiKunyomi.textContent = currentKanji.kunyomi;
+        let shuffledVocab = [];
+        let currentWordIndex = 0;
+        let hasAnswered = false;
 
-            // Update counter and progress bar
-            kanjiCounter.textContent = `${currentIndex + 1} / ${n5Kanji.length}`;
-            const progressPercentage = ((currentIndex + 1) / n5Kanji.length) * 100;
-            progressBar.style.width = `${progressPercentage}%`;
-            
-            // Reset flip state
-            flashcard.classList.remove('flipped');
-            
-            // Update button states
-            prevBtn.disabled = currentIndex === 0;
-            nextBtn.disabled = currentIndex === n5Kanji.length - 1;
+        function shuffleArray(array) {
+            return array.sort(() => Math.random() - 0.5);
         }
 
-        flashcard.addEventListener('click', () => {
-            flashcard.classList.toggle('flipped');
+        function loadSentence() {
+            hasAnswered = false;
+            if (currentWordIndex >= shuffledVocab.length) {
+                // Reshuffle and start over if we've gone through all words
+                currentWordIndex = 0;
+                shuffledVocab = shuffleArray([...vocabulary]);
+            }
+            
+            const currentWord = shuffledVocab[currentWordIndex];
+            
+            // Display Japanese sentence with highlighted word
+            const formattedJPSentence = currentWord.sentenceJP.replace('{word}', `<span class="highlight">${currentWord.word}</span>`);
+            japaneseSentenceEl.innerHTML = formattedJPSentence;
+
+            // Prepare English sentence but keep it hidden
+            englishSentenceEl.innerHTML = currentWord.sentenceEN;
+            englishSentenceEl.classList.add('hidden');
+
+            // Shuffle and display options
+            const options = shuffleArray([currentWord.correctMeaning, ...currentWord.options]);
+            optionBtns.forEach((btn, index) => {
+                btn.textContent = options[index];
+                // Reset styles
+                btn.className = 'option-btn p-4 border-2 border-slate-300 rounded-lg text-lg text-slate-700 hover:bg-slate-100 transition-colors duration-200';
+                btn.disabled = false;
+            });
+            
+            // Hide the next button
+            nextBtn.classList.add('hidden');
+        }
+
+        function checkAnswer(e) {
+            if (hasAnswered) return;
+            hasAnswered = true;
+
+            const selectedBtn = e.target;
+            const selectedAnswer = selectedBtn.textContent;
+            const correctAnswer = shuffledVocab[currentWordIndex].correctMeaning;
+
+            optionBtns.forEach(btn => {
+                btn.disabled = true; // Disable all buttons after an answer
+                const btnAnswer = btn.textContent;
+                if (btnAnswer === correctAnswer) {
+                    if (selectedAnswer === correctAnswer) {
+                        btn.classList.add('correct');
+                    } else {
+                        btn.classList.add('correct-border');
+                    }
+                } else if (btn === selectedBtn) {
+                    btn.classList.add('incorrect');
+                }
+            });
+
+            // Show translation and next button
+            englishSentenceEl.classList.remove('hidden');
+            nextBtn.classList.remove('hidden');
+        }
+
+        function nextSentence() {
+            currentWordIndex++;
+            loadSentence();
+        }
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            shuffledVocab = shuffleArray([...vocabulary]);
+            loadSentence();
         });
 
-        nextBtn.addEventListener('click', () => {
-            if (currentIndex < n5Kanji.length - 1) {
-                currentIndex++;
-                updateCard();
-            }
-        });
+        optionBtns.forEach(btn => btn.addEventListener('click', checkAnswer));
+        nextBtn.addEventListener('click', nextSentence);
 
-        prevBtn.addEventListener('click', () => {
-            if (currentIndex > 0) {
-                currentIndex--;
-                updateCard();
-            }
-        });
-        
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight') {
-                nextBtn.click();
-            } else if (e.key === 'ArrowLeft') {
-                prevBtn.click();
-            } else if (e.key === ' ') {
-                e.preventDefault(); // Prevent page scroll
-                flashcard.click();
-            }
-        });
-
-        // Initial load
-        updateCard();
     </script>
-
 </body>
 </html>
