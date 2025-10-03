@@ -59,7 +59,7 @@ jobs:
             }
 
       - name: 'Multi-approvers'
-        uses: 'abcxyz/actions/.github/actions/multi-approvers'
+        uses: 'abcxyz/actions/.github/actions/multi-approvers@68021048f523436e1abe763c680082dc88c5933f'
         with:
           team: 'github-team-slug'
           token: '${{ steps.minty.outputs.token }}'
