@@ -1,43 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JLPT N5 Vocabulary Practice</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', 'Noto Sans JP', sans-serif;
-        }
-        .highlight {
-            font-weight: bold;
-            color: #3B82F6; /* blue-500 */
-        }
-        .correct {
-            background-color: #22C55E !important; /* green-500 */
-            color: white !important;
-            border-color: #22C55E !important;
-        }
-        .incorrect {
-            background-color: #EF4444 !important; /* red-500 */
-            color: white !important;
-            border-color: #EF4444 !important;
-        }
-        .correct-border {
-            border-color: #22C55E !important; /* green-500 */
-            border-width: 2px;
-        }
-    </style>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700&family=Inter:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
+
 <body class="bg-slate-100 flex items-center justify-center min-h-screen p-4">
 
     <div id="app" class="w-full max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-6 md:p-8 text-center">
-        
+
         <h1 class="text-2xl md:text-3xl font-bold text-slate-800 mb-6">JLPT N5 Vocabulary Practice</h1>
-        
+
         <!-- Japanese Sentence -->
-        <div id="japanese-sentence-container" class="bg-slate-50 rounded-lg p-4 mb-6 min-h-[80px] flex items-center justify-center">
+        <div id="japanese-sentence-container"
+            class="bg-slate-50 rounded-lg p-4 mb-6 min-h-[80px] flex items-center justify-center">
             <p id="japanese-sentence" class="text-xl md:text-2xl text-slate-700"></p>
         </div>
 
@@ -48,181 +31,27 @@
 
         <!-- Multiple Choice Options -->
         <div id="options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-            <button class="option-btn p-4 border-2 border-slate-300 rounded-lg text-lg text-slate-700 hover:bg-slate-100 transition-colors duration-200"></button>
-            <button class="option-btn p-4 border-2 border-slate-300 rounded-lg text-lg text-slate-700 hover:bg-slate-100 transition-colors duration-200"></button>
-            <button class="option-btn p-4 border-2 border-slate-300 rounded-lg text-lg text-slate-700 hover:bg-slate-100 transition-colors duration-200"></button>
-            <button class="option-btn p-4 border-2 border-slate-300 rounded-lg text-lg text-slate-700 hover:bg-slate-100 transition-colors duration-200"></button>
+            <button
+                class="option-btn p-4 border-2 border-slate-300 rounded-lg text-lg text-slate-700 hover:bg-slate-100 transition-colors duration-200"></button>
+            <button
+                class="option-btn p-4 border-2 border-slate-300 rounded-lg text-lg text-slate-700 hover:bg-slate-100 transition-colors duration-200"></button>
+            <button
+                class="option-btn p-4 border-2 border-slate-300 rounded-lg text-lg text-slate-700 hover:bg-slate-100 transition-colors duration-200"></button>
+            <button
+                class="option-btn p-4 border-2 border-slate-300 rounded-lg text-lg text-slate-700 hover:bg-slate-100 transition-colors duration-200"></button>
         </div>
 
         <!-- Next Button (Initially Hidden) -->
         <div id="next-button-container" class="min-h-[60px] flex items-center justify-center">
-            <button id="next-btn" class="hidden w-full sm:w-auto bg-blue-500 text-white font-bold py-3 px-8 rounded-lg text-lg hover:bg-blue-600 transition-transform duration-200 transform hover:scale-105">
+            <button id="next-btn"
+                class="hidden w-full sm:w-auto bg-blue-500 text-white font-bold py-3 px-8 rounded-lg text-lg hover:bg-blue-600 transition-transform duration-200 transform hover:scale-105">
                 Next
             </button>
         </div>
 
     </div>
 
-    <script>
-        const vocabulary = [
-            // Original Words
-            { word: '私', sentenceJP: '{word}は学生です。', sentenceEN: '<strong>I</strong> am a student.', correctMeaning: 'I; me', options: ['You', 'He', 'She'] },
-            { word: 'です', sentenceJP: 'これは本{word}。', sentenceEN: 'This <strong>is</strong> a book.', correctMeaning: 'is; am; are', options: ['was', 'will be', 'is not'] },
-            { word: '学生', sentenceJP: '田中さんは{word}です。', sentenceEN: 'Mr. Tanaka is a <strong>student</strong>.', correctMeaning: 'student', options: ['teacher', 'doctor', 'engineer'] },
-            { word: '学校', sentenceJP: '{word}へ行きます。', sentenceEN: 'I go to <strong>school</strong>.', correctMeaning: 'school', options: ['hospital', 'park', 'station'] },
-            { word: '先生', sentenceJP: '山田{word}は日本語を教えます。', sentenceEN: 'Teacher Yamada teaches Japanese.', correctMeaning: 'teacher', options: ['student', 'doctor', 'police officer'] },
-            { word: '大きい', sentenceJP: 'この犬は{word}です。', sentenceEN: 'This dog is <strong>big</strong>.', correctMeaning: 'big', options: ['small', 'fast', 'red'] },
-            { word: '小さい', sentenceJP: 'その猫は{word}です。', sentenceEN: 'That cat is <strong>small</strong>.', correctMeaning: 'small', options: ['big', 'black', 'cute'] },
-            { word: '食べます', sentenceJP: '毎日ご飯を{word}。', sentenceEN: 'I <strong>eat</strong> rice every day.', correctMeaning: 'to eat', options: ['to drink', 'to sleep', 'to read'] },
-            { word: '飲みます', sentenceJP: '水を{word}。', sentenceEN: 'I <strong>drink</strong> water.', correctMeaning: 'to drink', options: ['to eat', 'to see', 'to write'] },
-            { word: '見ます', sentenceJP: 'テレビを{word}。', sentenceEN: 'I <strong>watch</strong> TV.', correctMeaning: 'to see; to watch', options: ['to listen', 'to speak', 'to buy'] },
-            { word: '行きます', sentenceJP: '明日、京都へ{word}。', sentenceEN: 'I will <strong>go</strong> to Kyoto tomorrow.', correctMeaning: 'to go', options: ['to come', 'to return', 'to stay'] },
-            { word: '今日', sentenceJP: '{word}は月曜日です。', sentenceEN: '<strong>Today</strong> is Monday.', correctMeaning: 'today', options: ['yesterday', 'tomorrow', 'tonight'] },
-            { word: '明日', sentenceJP: '{word}は晴れです。', sentenceEN: '<strong>Tomorrow</strong> will be sunny.', correctMeaning: 'tomorrow', options: ['today', 'yesterday', 'the day after tomorrow'] },
-            { word: '昨日', sentenceJP: '{word}、映画を見ました。', sentenceEN: '<strong>Yesterday</strong>, I watched a movie.', correctMeaning: 'yesterday', options: ['today', 'tomorrow', 'last week'] },
-            { word: '時間', sentenceJP: '今、何{word}ですか。', sentenceEN: 'What <strong>time</strong> is it now?', correctMeaning: 'time', options: ['day', 'money', 'place'] },
-            
-            // Added Nouns
-            { word: '人', sentenceJP: 'あそこに{word}がいます。', sentenceEN: 'There is a <strong>person</strong> over there.', correctMeaning: 'person', options: ['dog', 'cat', 'tree'] },
-            { word: '本', sentenceJP: 'これは日本の{word}です。', sentenceEN: 'This is a Japanese <strong>book</strong>.', correctMeaning: 'book', options: ['pen', 'car', 'phone'] },
-            { word: '車', sentenceJP: '駅まで{word}で行きます。', sentenceEN: 'I will go to the station by <strong>car</strong>.', correctMeaning: 'car', options: ['train', 'bicycle', 'bus'] },
-            { word: '駅', sentenceJP: '次の{word}で降ります。', sentenceEN: 'I will get off at the next <strong>station</strong>.', correctMeaning: 'station', options: ['airport', 'bus stop', 'port'] },
-            { word: '友達', sentenceJP: '{word}と映画を見ます。', sentenceEN: 'I will watch a movie with a <strong>friend</strong>.', correctMeaning: 'friend', options: ['family', 'teacher', 'pet'] },
-            { word: '天気', sentenceJP: '今日の{word}はどうですか。', sentenceEN: 'How is the <strong>weather</strong> today?', correctMeaning: 'weather', options: ['time', 'date', 'news'] },
-            { word: '部屋', sentenceJP: '私の{word}は広いです。', sentenceEN: 'My <strong>room</strong> is spacious.', correctMeaning: 'room', options: ['house', 'kitchen', 'garden'] },
-            { word: '魚', sentenceJP: '{word}が好きです。', sentenceEN: 'I like <strong>fish</strong>.', correctMeaning: 'fish', options: ['meat', 'vegetable', 'fruit'] },
-            { word: '肉', sentenceJP: '晩ご飯は{word}でした。', sentenceEN: 'Dinner was <strong>meat</strong>.', correctMeaning: 'meat', options: ['fish', 'bread', 'rice'] },
-            { word: '猫', sentenceJP: '公園に{word}がいます。', sentenceEN: 'There is a <strong>cat</strong> in the park.', correctMeaning: 'cat', options: ['dog', 'bird', 'mouse'] },
-            { word: '犬', sentenceJP: 'うちには{word}がいます。', sentenceEN: 'We have a <strong>dog</strong> at home.', correctMeaning: 'dog', options: ['cat', 'hamster', 'fish'] },
-            { word: '椅子', sentenceJP: 'そこに{word}があります。', sentenceEN: 'There is a <strong>chair</strong> there.', correctMeaning: 'chair', options: ['table', 'bed', 'desk'] },
-            { word: '机', sentenceJP: '{word}の上に本があります。', sentenceEN: 'There is a book on the <strong>desk</strong>.', correctMeaning: 'desk', options: ['chair', 'sofa', 'shelf'] },
-
-            // Added Verbs
-            { word: '買います', sentenceJP: 'スーパーで野菜を{word}。', sentenceEN: 'I <strong>buy</strong> vegetables at the supermarket.', correctMeaning: 'to buy', options: ['to sell', 'to make', 'to eat'] },
-            { word: '話します', sentenceJP: '友達と電話で{word}。', sentenceEN: 'I <strong>talk</strong> with my friend on the phone.', correctMeaning: 'to speak; to talk', options: ['to listen', 'to write', 'to read'] },
-            { word: '書きます', sentenceJP: '手紙を{word}。', sentenceEN: 'I <strong>write</strong> a letter.', correctMeaning: 'to write', options: ['to read', 'to draw', 'to send'] },
-            { word: '聞きます', sentenceJP: '音楽を{word}のが好きです。', sentenceEN: 'I like to <strong>listen</strong> to music.', correctMeaning: 'to listen; to hear', options: ['to watch', 'to sing', 'to play'] },
-            { word: '来ます', sentenceJP: 'バスが{word}。', sentenceEN: 'The bus is <strong>coming</strong>.', correctMeaning: 'to come', options: ['to go', 'to stop', 'to leave'] },
-            { word: 'します', sentenceJP: '毎日、宿題を{word}。', sentenceEN: 'I <strong>do</strong> my homework every day.', correctMeaning: 'to do', options: ['to finish', 'to forget', 'to start'] },
-            { word: '寝ます', sentenceJP: '毎晩11時に{word}。', sentenceEN: 'I <strong>sleep</strong> at 11 PM every night.', correctMeaning: 'to sleep', options: ['to wake up', 'to work', 'to study'] },
-            { word: '起きます', sentenceJP: '朝6時に{word}。', sentenceEN: 'I <strong>wake up</strong> at 6 AM.', correctMeaning: 'to wake up', options: ['to sleep', 'to dream', 'to eat breakfast'] },
-            { word: '読みます', sentenceJP: '毎日、新聞を{word}。', sentenceEN: 'I <strong>read</strong> the newspaper every day.', correctMeaning: 'to read', options: ['to write', 'to buy', 'to watch'] },
-            { word: '会います', sentenceJP: '駅で友達に{word}。', sentenceEN: 'I will <strong>meet</strong> my friend at the station.', correctMeaning: 'to meet', options: ['to call', 'to leave', 'to wait for'] },
-            
-            // Added I-Adjectives
-            { word: '新しい', sentenceJP: 'これは{word}車です。', sentenceEN: 'This is a <strong>new</strong> car.', correctMeaning: 'new', options: ['old', 'fast', 'red'] },
-            { word: '古い', sentenceJP: 'あの建物は{word}です。', sentenceEN: 'That building is <strong>old</strong>.', correctMeaning: 'old', options: ['new', 'big', 'beautiful'] },
-            { word: '暑い', sentenceJP: '今日はとても{word}です。', sentenceEN: 'It is very <strong>hot</strong> today.', correctMeaning: 'hot (weather)', options: ['cold', 'warm', 'cool'] },
-            { word: '寒い', sentenceJP: '冬は{word}です。', sentenceEN: 'Winter is <strong>cold</strong>.', correctMeaning: 'cold (weather)', options: ['hot', 'sunny', 'windy'] },
-            { word: 'おいしい', sentenceJP: 'このケーキは{word}です。', sentenceEN: 'This cake is <strong>delicious</strong>.', correctMeaning: 'delicious', options: ['bad-tasting', 'sweet', 'expensive'] },
-            { word: '楽しい', sentenceJP: 'パーティーは{word}でした。', sentenceEN: 'The party was <strong>fun</strong>.', correctMeaning: 'fun', options: ['boring', 'long', 'loud'] },
-            { word: '高い', sentenceJP: 'その時計は{word}です。', sentenceEN: 'That watch is <strong>expensive</strong>.', correctMeaning: 'expensive; high', options: ['cheap', 'small', 'new'] },
-            { word: '安い', sentenceJP: 'このシャツは{word}です。', sentenceEN: 'This shirt is <strong>cheap</strong>.', correctMeaning: 'cheap', options: ['expensive', 'pretty', 'blue'] },
-            { word: '忙しい', sentenceJP: '今週は{word}です。', sentenceEN: 'I am <strong>busy</strong> this week.', correctMeaning: 'busy', options: ['free', 'tired', 'happy'] },
-            { word: '近い', sentenceJP: '駅はここから{word}です。', sentenceEN: 'The station is <strong>near</strong> from here.', correctMeaning: 'near', options: ['far', 'right', 'left'] },
-
-            // Added Na-Adjectives
-            { word: '好き', sentenceJP: '私は猫が{word}です。', sentenceEN: 'I <strong>like</strong> cats.', correctMeaning: 'likeable; fond of', options: ['hate', 'have', 'see'] },
-            { word: 'きれい', sentenceJP: 'この花は{word}ですね。', sentenceEN: 'This flower is <strong>beautiful</strong>, isn\'t it?', correctMeaning: 'beautiful; clean', options: ['ugly', 'wilted', 'red'] },
-            { word: '元気', sentenceJP: 'おばあさんは{word}です。', sentenceEN: 'My grandmother is <strong>healthy/energetic</strong>.', correctMeaning: 'healthy; energetic', options: ['sick', 'old', 'tired'] },
-            { word: '静か', sentenceJP: '図書館は{word}です。', sentenceEN: 'The library is <strong>quiet</strong>.', correctMeaning: 'quiet', options: ['loud', 'big', 'dark'] },
-            { word: '有名', sentenceJP: '富士山は{word}です。', sentenceEN: 'Mt. Fuji is <strong>famous</strong>.', correctMeaning: 'famous', options: ['tall', 'far', 'unknown'] },
-
-            // Added Adverbs & Others
-            { word: 'たくさん', sentenceJP: 'りんごを{word}買いました。', sentenceEN: 'I bought <strong>a lot of</strong> apples.', correctMeaning: 'a lot; many', options: ['a few', 'one', 'some'] },
-            { word: '少し', sentenceJP: '日本語が{word}分かります。', sentenceEN: 'I understand Japanese a <strong>little</strong>.', correctMeaning: 'a little; a few', options: ['a lot', 'perfectly', 'not at all'] },
-            { word: 'いつも', sentenceJP: '私は{word}6時に起きます。', sentenceEN: 'I <strong>always</strong> wake up at 6.', correctMeaning: 'always', options: ['sometimes', 'never', 'usually'] },
-            { word: 'よく', sentenceJP: '週末は{word}映画を見ます。', sentenceEN: 'I <strong>often</strong> watch movies on the weekend.', correctMeaning: 'often; well', options: ['rarely', 'never', 'once'] },
-            { word: '時々', sentenceJP: '{word}、喫茶店に行きます。', sentenceEN: 'I <strong>sometimes</strong> go to a cafe.', correctMeaning: 'sometimes', options: ['always', 'never', 'every day'] },
-        ];
-
-        const japaneseSentenceEl = document.getElementById('japanese-sentence');
-        const englishSentenceEl = document.getElementById('english-sentence');
-        const optionsContainer = document.getElementById('options-container');
-        const optionBtns = document.querySelectorAll('.option-btn');
-        const nextBtn = document.getElementById('next-btn');
-
-        let shuffledVocab = [];
-        let currentWordIndex = 0;
-        let hasAnswered = false;
-
-        function shuffleArray(array) {
-            return array.sort(() => Math.random() - 0.5);
-        }
-
-        function loadSentence() {
-            hasAnswered = false;
-            if (currentWordIndex >= shuffledVocab.length) {
-                // Reshuffle and start over if we've gone through all words
-                currentWordIndex = 0;
-                shuffledVocab = shuffleArray([...vocabulary]);
-            }
-            
-            const currentWord = shuffledVocab[currentWordIndex];
-            
-            // Display Japanese sentence with highlighted word
-            const formattedJPSentence = currentWord.sentenceJP.replace('{word}', `<span class="highlight">${currentWord.word}</span>`);
-            japaneseSentenceEl.innerHTML = formattedJPSentence;
-
-            // Prepare English sentence but keep it hidden
-            englishSentenceEl.innerHTML = currentWord.sentenceEN;
-            englishSentenceEl.classList.add('hidden');
-
-            // Shuffle and display options
-            const options = shuffleArray([currentWord.correctMeaning, ...currentWord.options]);
-            optionBtns.forEach((btn, index) => {
-                btn.textContent = options[index];
-                // Reset styles
-                btn.className = 'option-btn p-4 border-2 border-slate-300 rounded-lg text-lg text-slate-700 hover:bg-slate-100 transition-colors duration-200';
-                btn.disabled = false;
-            });
-            
-            // Hide the next button
-            nextBtn.classList.add('hidden');
-        }
-
-        function checkAnswer(e) {
-            if (hasAnswered) return;
-            hasAnswered = true;
-
-            const selectedBtn = e.target;
-            const selectedAnswer = selectedBtn.textContent;
-            const correctAnswer = shuffledVocab[currentWordIndex].correctMeaning;
-
-            optionBtns.forEach(btn => {
-                btn.disabled = true; // Disable all buttons after an answer
-                const btnAnswer = btn.textContent;
-                if (btnAnswer === correctAnswer) {
-                    if (selectedAnswer === correctAnswer) {
-                        btn.classList.add('correct');
-                    } else {
-                        btn.classList.add('correct-border');
-                    }
-                } else if (btn === selectedBtn) {
-                    btn.classList.add('incorrect');
-                }
-            });
-
-            // Show translation and next button
-            englishSentenceEl.classList.remove('hidden');
-            nextBtn.classList.remove('hidden');
-        }
-
-        function nextSentence() {
-            currentWordIndex++;
-            loadSentence();
-        }
-
-        // Initialize App
-        document.addEventListener('DOMContentLoaded', () => {
-            shuffledVocab = shuffleArray([...vocabulary]);
-            loadSentence();
-        });
-
-        optionBtns.forEach(btn => btn.addEventListener('click', checkAnswer));
-        nextBtn.addEventListener('click', nextSentence);
-
-    </script>
+    <script src="vocabulary.js"></script>
 </body>
-</html>
 
+</html>

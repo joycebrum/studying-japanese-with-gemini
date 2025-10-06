@@ -1,0 +1,29 @@
+body {
+    font-family: 'Inter', 'Noto Sans JP', sans-serif;
+}
+
+.highlight {
+    font-weight: bold;
+    color: #3B82F6;
+    /* blue-500 */
+}
+
+.correct {
+    background-color: #22C55E !important;
+    /* green-500 */
+    color: white !important;
+    border-color: #22C55E !important;
+}
+
+.incorrect {
+    background-color: #EF4444 !important;
+    /* red-500 */
+    color: white !important;
+    border-color: #EF4444 !important;
+}
+
+.correct-border {
+    border-color: #22C55E !important;
+    /* green-500 */
+    border-width: 2px;
+}
